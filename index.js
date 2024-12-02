@@ -14,7 +14,7 @@ app.use("/api/users", userRoute);
 app.use("/api/test", testRoute);
 app.get("/", (req,res)=>{
     res.send("welcome")
-};
+});
 
 
 app.listen(8800,()=>{

@@ -12,7 +12,7 @@ app.use(cookieParser())
 app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
 app.use("/api/test", testRoute);
-app.get("/api/test", (req,res)=>{
+app.get("/", (req,res)=>{
     res.send("welcome")
 };
 

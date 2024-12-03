@@ -1,0 +1,348 @@
+openapi: 3.0.3
+info:
+  title: User account management
+  description: |-
+    The user account management system uses modern technologies to ensure security and efficiency. Prisma/Client is used to connect to the database, helping to query and manage user data quickly and efficiently. Bcrypt is integrated to encrypt user passwords, protecting personal information from threats. Cookie-parser helps to handle cookies to maintain login sessions, while cors allows sharing resources between different domains. Express.js is the main framework for building API servers, supporting operations such as user login and registration. JSON Web Tokens (JWT) help authenticate and authorize users, ensuring security for security requests. Finally, React is used on the frontend to build the user interface, creating a smooth and easy-to-use experience.
+  contact:
+    email: 19522379@gmail.com
+  version: 1.0.0
+servers:
+  - url: http://localhost:8800
+tags:
+  - name: users
+    description: user related update user profile
+  - name: auth
+    description: user related login, register, logout
+  - name: test
+    description: confirm user
+paths:
+  /api/users:
+    get:
+      tags:
+        - user
+      summary: Get all user profiles
+      description: Get all user profiles infomation
+      operationId: getUsers
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserUpdate"
+        "500":
+          description: Failed to get users!
+  /api/users/{userId}:
+    put:
+      tags:
+        - users
+      summary: Update an user profile
+      description: Update an user profile
+      operationId: updateUser
+      requestBody:
+        description: user profile infomation
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/userProfileUpdateBody"
+        required: true
+      responses:
+        "200":
+          description: Successful update user profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessfulUpdateUserProfile"
+        "500":
+          description: Failed to get users!
+    get:
+      tags:
+        - users
+      summary: Find purchase user by ID
+      description: Find purchase user by ID
+      operationId: getUser
+      parameters:
+        - name: userId
+          in: path
+          description: ID of user that needs to be fetched
+          required: true
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+                format: MongoId
+                example: "674a21103655be7818366e7e"
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserUpdate"
+        "500":
+          description: Failed to get user!
+    delete:
+      tags:
+        - users
+      summary: Delete purchase user by ID
+      description: Delete purchase user by ID
+      operationId: deleteUser
+      parameters:
+        - name: UserId
+          in: path
+          description: ID of the order that needs to be deleted
+          required: true
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+                format: MongoId
+                example: "674a21103655be7818366e7e"
+
+      responses:
+        "200":
+          description: User deleted
+        "500":
+          description: Failed to delete users!
+  /api/auth/register:
+    post:
+      tags:
+        - auth
+      summary: Create user
+      description: This can only be done by the logged in user.
+      operationId: register
+      requestBody:
+        description: Created user object
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserAuthRegister"
+      responses:
+        "200":
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserAuth"
+        "500":
+          description: Failed to create user!
+  /api/auth/login:
+    post:
+      tags:
+        - auth
+      summary: Login user
+      description: This can only be done by the logged in user.
+      operationId: login
+      requestBody:
+        description: Login user object
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserAuthLogin"
+      responses:
+        "200":
+          description: login successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserAuth"
+        "401":
+          description: Invalid Credentials!
+        "500":
+          description: Invalid Credentials!
+  /api/auth/logout:
+    post:
+      tags:
+        - auth
+      summary: Logout purchase user
+      description: Logout purchase user
+      operationId: logout
+      requestBody:
+        description: Logout user object
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  description: "JWT Token used for authentication"
+                  example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjc0YTIxMTAzNjU1N2JlNzgxODM2NmU3ZWIiLCJpYXQiOjE2Mzc0Mzk2NzYsImV4cCI6MTYzNzQ3NTI3Nn0.F4D7wIjQ1T0n-6qDZ5GH1_Z1bdeN2gWezQ-eWxUbxlw"
+      responses:
+        default:
+          description: Logout Successful
+  /api/test/should-be-logged-in:
+    get:
+      tags:
+        - test
+      summary: confirm user logged in
+      description: confirm user logged in
+      operationId: should be logged in
+      parameters:
+        - name: userId
+          in: path
+          description: ID of user that needs to be fetched
+          required: true
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+                format: MongoId
+                example: "674a21103655be7818366e7e"
+      responses:
+        default:
+          description: You are Authenticated
+  /api/test/should-be-admin:
+    get:
+      tags:
+        - test
+      summary: confirm admin
+      description: confirm admin
+      operationId: should be admin
+      requestBody:
+        description: confirm be admin
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  description: "JWT Token used for confirm admin"
+                  example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjc0YTIxMTAzNjU1N2JlNzgxODM2NmU3ZWIiLCJpYXQiOjE2Mzc0Mzk2NzYsImV4cCI6MTYzNzQ3NTI3Nn0.F4D7wIjQ1T0n-6qDZ5GH1_Z1bdeN2gWezQ-eWxUbxlw"
+      responses:
+        "200":
+          description: You are Authenticated
+        "401":
+          description: Not Authenticated!
+        "403":
+          description: Token is not Valid!
+      security:
+        - petstore_auth:
+            - write:pets
+            - read:pets
+components:
+  schemas:
+    userProfileUpdateBody:
+      type: object
+      properties:
+        username:
+          type: string
+          example: tuan
+        email:
+          type: string
+          example: tuan@mail.com
+        password:
+          type: string
+          example: 9999
+        avatar:
+          type: string
+          example: https://th.bing.com/th/id/R.d451b32fd1d5c28b78124b14b93d86e2?rik=g2y4FyowIWWAHQ&pid=ImgRaw&r=0
+    SuccessfulUpdateUserProfile:
+      type: object
+      properties:
+        id:
+          type: string
+          format: MongoId
+          example: 674b731d49efeaf8b2c20f6a
+        email:
+          type: string
+          example: tuan@gmail.com
+        username:
+          type: string
+          example: tuan
+        password:
+          type: string
+          example: $2b$10$wMlyo0vjmx2qdQxy06o0NOqz9rp6mLqAh1mhfOZtu0xbqYMTJyXii
+        avatar:
+          type: string
+          example: https://res.cloudinary.com/dwhnnpcyd/image/upload/v1733041756/avatars/winarp02xnqesavzxgki.jpg
+        createdAt:
+          type: string
+          format: date-time
+          example: 2024-11-30T20:18:37.144Z
+    UserUpdate:
+      type: object
+      properties:
+        id:
+          type: string
+          format: MongoId
+          example: "674a21103655be7818366e7e"
+        email:
+          type: string
+          example: "thu@gmail.com"
+        username:
+          type: string
+          example: "thu"
+        password:
+          type: string
+          example: "$2b$10$AwujVxaDDVl78jA4pXwx5uWhyA4M9dVpnqw0fZenx3UTWkcORTlDO"
+        avatar:
+          type: string
+          nullable: true
+          example: null
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-11-29T20:16:16.263Z"
+    UserAuth:
+      type: object
+      properties:
+        id:
+          type: string
+          format: MongoId
+          example: "674a21103655be7818366e7e"
+        email:
+          type: string
+          example: "thu@gmail.com"
+        username:
+          type: string
+          example: "thu"
+        password:
+          type: string
+          example: "$2b$10$AwujVxaDDVl78jA4pXwx5uWhyA4M9dVpnqw0fZenx3UTWkcORTlDO"
+        avatar:
+          type: string
+          nullable: true
+          example: null
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-11-29T20:16:16.263Z"
+    UserAuthRegister:
+      type: object
+      properties:
+        email:
+          type: string
+          example: "thu@gmail.com"
+        username:
+          type: string
+          example: "thu"
+        password:
+          type: string
+          example: "$2b$10$AwujVxaDDVl78jA4pXwx5uWhyA4M9dVpnqw0fZenx3UTWkcORTlDO"
+    UserAuthLogin:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "thu"
+        password:
+          type: string
+          example: "$2b$10$AwujVxaDDVl78jA4pXwx5uWhyA4M9dVpnqw0fZenx3UTWkcORTlDO"
+  securitySchemes:
+    petstore_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://petstore3.swagger.io/oauth/authorize
+          scopes:
+            write:pets: modify pets in your account
+            read:pets: read your pets
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
